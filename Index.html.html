@@ -1,0 +1,1667 @@
+<!DOCTYPE html>
+
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Only Leveling</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#7A9E7E">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Only Leveling">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sage: #7A9E7E;
+  --sage-light: #A8C5AC;
+  --sage-dark: #4E7A52;
+  --beige: #F5EFE6;
+  --beige-dark: #E8DDD0;
+  --beige-warm: #EDE3D5;
+  --brown: #8B6F5E;
+  --brown-light: #C4A882;
+  --text: #2D2D2D;
+  --text-light: #6B6B6B;
+  --white: #FDFAF7;
+  --gold: #D4A847;
+  --error: #C0504D;
+  --radius: 18px;
+  --radius-sm: 10px;
+  --shadow: 0 4px 24px rgba(74,100,78,0.10);
+  --shadow-lg: 0 8px 40px rgba(74,100,78,0.16);
+}
+
+- { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+body {
+font-family: ‘DM Sans’, sans-serif;
+background: var(–beige);
+color: var(–text);
+min-height: 100vh;
+max-width: 430px;
+margin: 0 auto;
+position: relative;
+overflow-x: hidden;
+}
+
+/* –– SCREENS –– */
+.screen { display: none; min-height: 100vh; padding-bottom: 90px; animation: fadeIn 0.35s ease; }
+.screen.active { display: block; }
+@keyframes fadeIn { from { opacity:0; transform: translateY(12px); } to { opacity:1; transform: translateY(0); } }
+
+/* –– NAV –– */
+.bottom-nav {
+position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+width: 100%; max-width: 430px;
+background: var(–white);
+border-top: 1px solid var(–beige-dark);
+display: flex; justify-content: space-around; align-items: center;
+padding: 10px 0 calc(10px + env(safe-area-inset-bottom));
+z-index: 100;
+box-shadow: 0 -2px 20px rgba(0,0,0,0.06);
+}
+.nav-item {
+display: flex; flex-direction: column; align-items: center; gap: 4px;
+cursor: pointer; padding: 4px 12px; border-radius: 12px;
+transition: all 0.2s;
+color: var(–text-light);
+font-size: 11px; font-weight: 500;
+}
+.nav-item.active { color: var(–sage-dark); }
+.nav-item .nav-icon { font-size: 22px; transition: transform 0.2s; }
+.nav-item.active .nav-icon { transform: scale(1.15); }
+
+/* –– HEADER –– */
+.app-header {
+padding: 56px 20px 20px;
+background: linear-gradient(160deg, var(–sage) 0%, var(–sage-dark) 100%);
+color: white;
+position: relative;
+overflow: hidden;
+}
+.app-header::before {
+content: ‘’;
+position: absolute; top: -40px; right: -40px;
+width: 180px; height: 180px;
+background: rgba(255,255,255,0.08);
+border-radius: 50%;
+}
+.app-header::after {
+content: ‘’;
+position: absolute; bottom: -60px; left: -20px;
+width: 140px; height: 140px;
+background: rgba(255,255,255,0.05);
+border-radius: 50%;
+}
+.header-title { font-family: ‘Playfair Display’, serif; font-size: 28px; font-weight: 700; position: relative; z-index:1; }
+.header-sub { font-size: 14px; opacity: 0.85; margin-top: 4px; position: relative; z-index:1; }
+
+/* –– CARDS –– */
+.card {
+background: var(–white);
+border-radius: var(–radius);
+padding: 20px;
+box-shadow: var(–shadow);
+margin-bottom: 14px;
+}
+.card-sm { padding: 14px 16px; border-radius: var(–radius-sm); }
+
+/* –– BUTTONS –– */
+.btn {
+display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+padding: 14px 24px; border-radius: 50px; border: none; cursor: pointer;
+font-family: ‘DM Sans’, sans-serif; font-size: 15px; font-weight: 600;
+transition: all 0.2s; width: 100%;
+}
+.btn-primary { background: var(–sage-dark); color: white; }
+.btn-primary:active { transform: scale(0.97); background: var(–sage); }
+.btn-secondary { background: var(–beige-dark); color: var(–text); }
+.btn-outline { background: transparent; border: 2px solid var(–sage); color: var(–sage-dark); }
+.btn-gold { background: linear-gradient(135deg, var(–gold), #E8C06A); color: white; }
+.btn-sm { padding: 9px 18px; font-size: 13px; }
+
+/* –– SECTION TITLE –– */
+.section-title {
+font-family: ‘Playfair Display’, serif;
+font-size: 20px; font-weight: 700;
+margin: 24px 20px 12px;
+color: var(–text);
+}
+.section-subtitle { font-size: 13px; color: var(–text-light); margin: -8px 20px 12px; }
+
+/* ===========================
+HOME SCREEN
+=========================== */
+#home { background: var(–beige); }
+
+.home-header {
+padding: 52px 20px 28px;
+background: linear-gradient(160deg, var(–sage-dark) 0%, var(–sage) 60%, var(–sage-light) 100%);
+border-radius: 0 0 32px 32px;
+color: white;
+position: relative; overflow: hidden;
+}
+.home-header::before {
+content:’’; position: absolute; top:-50px; right:-50px;
+width:200px; height:200px; background:rgba(255,255,255,0.07); border-radius:50%;
+}
+.home-greeting { font-size: 14px; opacity: 0.85; margin-bottom: 4px; }
+.home-name { font-family:‘Playfair Display’,serif; font-size:26px; font-weight:700; }
+
+/* Win Streak */
+.streak-card {
+background: rgba(255,255,255,0.18);
+backdrop-filter: blur(10px);
+border-radius: 20px;
+padding: 16px 18px;
+margin-top: 18px;
+display: flex; align-items: center; gap: 14px;
+border: 1px solid rgba(255,255,255,0.25);
+position: relative; z-index:1;
+}
+.streak-flame { font-size: 42px; line-height:1; filter: drop-shadow(0 2px 8px rgba(255,150,0,0.5)); }
+.streak-info { flex:1; }
+.streak-days { font-size: 32px; font-weight: 700; font-family:‘Playfair Display’,serif; line-height:1; }
+.streak-label { font-size: 13px; opacity:0.85; margin-top: 2px; }
+.streak-dots { display: flex; gap: 5px; margin-top: 8px; }
+.streak-dot { width: 28px; height: 6px; border-radius: 3px; background: rgba(255,255,255,0.3); }
+.streak-dot.done { background: var(–gold); }
+
+/* Today sessions */
+.today-sessions { padding: 0 20px; margin-top: 20px; }
+.today-card {
+background: var(–white); border-radius: var(–radius);
+padding: 16px 18px; box-shadow: var(–shadow);
+display: flex; align-items: center; gap: 14px;
+margin-bottom: 10px; cursor: pointer;
+transition: transform 0.2s, box-shadow 0.2s;
+border-left: 4px solid var(–sage);
+}
+.today-card:active { transform: scale(0.98); }
+.today-card.done { border-left-color: var(–gold); opacity: 0.75; }
+.today-emoji { font-size: 28px; }
+.today-info { flex:1; }
+.today-title { font-weight: 600; font-size: 15px; }
+.today-meta { font-size: 12px; color: var(–text-light); margin-top: 2px; }
+.today-check { font-size: 20px; }
+
+/* Stats row */
+.stats-row { display: flex; gap: 10px; padding: 0 20px; margin-bottom: 6px; }
+.stat-box { flex:1; background: var(–white); border-radius: var(–radius-sm); padding: 14px 10px; text-align:center; box-shadow: var(–shadow); }
+.stat-val { font-family:‘Playfair Display’,serif; font-size: 22px; font-weight:700; color: var(–sage-dark); }
+.stat-lbl { font-size: 11px; color: var(–text-light); margin-top: 2px; }
+
+/* ===========================
+SESSIONS SCREEN
+=========================== */
+.category-tabs {
+display: flex; gap: 10px; padding: 20px 20px 10px; overflow-x: auto;
+scrollbar-width: none;
+}
+.category-tabs::-webkit-scrollbar { display: none; }
+.cat-tab {
+white-space: nowrap; padding: 10px 20px; border-radius: 50px;
+border: 2px solid var(–beige-dark); background: var(–white);
+font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s;
+color: var(–text-light);
+}
+.cat-tab.active { background: var(–sage-dark); color: white; border-color: var(–sage-dark); }
+
+.sessions-grid { padding: 0 20px; }
+.session-card {
+background: var(–white); border-radius: var(–radius);
+overflow: hidden; margin-bottom: 14px; box-shadow: var(–shadow);
+cursor: pointer; transition: transform 0.2s;
+}
+.session-card:active { transform: scale(0.98); }
+.session-img {
+height: 140px; position: relative;
+display: flex; align-items: center; justify-content: center;
+font-size: 60px;
+}
+.session-img.weight { background: linear-gradient(135deg, #2D5A3D, #4E7A52); }
+.session-img.cardio { background: linear-gradient(135deg, #5A2D3D, #8B4A62); }
+.session-day-badge {
+position: absolute; top: 12px; left: 12px;
+background: rgba(255,255,255,0.9); color: var(–sage-dark);
+font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px;
+}
+.session-lock {
+position: absolute; top: 12px; right: 12px;
+background: rgba(0,0,0,0.4); color: white;
+font-size: 13px; padding: 4px 10px; border-radius: 20px;
+}
+.session-body { padding: 14px 16px; }
+.session-title { font-weight: 700; font-size: 16px; margin-bottom: 4px; }
+.session-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+.tag { background: var(–beige-dark); color: var(–text-light); font-size: 11px; padding: 3px 10px; border-radius: 20px; font-weight: 500; }
+.tag.sage { background: #E3EDE3; color: var(–sage-dark); }
+
+/* Session Detail Modal */
+.modal {
+display: none; position: fixed; inset: 0; z-index: 200;
+background: rgba(0,0,0,0.5); backdrop-filter: blur(4px);
+animation: fadeIn 0.2s;
+}
+.modal.open { display: flex; align-items: flex-end; }
+.modal-sheet {
+background: var(–white); width: 100%; max-width: 430px; margin: 0 auto;
+border-radius: 28px 28px 0 0; padding: 24px 20px 40px;
+max-height: 90vh; overflow-y: auto;
+animation: slideUp 0.3s ease;
+}
+@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+.modal-handle { width: 40px; height: 4px; background: var(–beige-dark); border-radius: 2px; margin: 0 auto 20px; }
+.exercise-list { margin: 16px 0; }
+.exercise-item {
+display: flex; align-items: center; gap: 14px; padding: 12px 0;
+border-bottom: 1px solid var(–beige-dark);
+}
+.ex-emoji { font-size: 28px; }
+.ex-info { flex:1; }
+.ex-name { font-weight: 600; font-size: 15px; }
+.ex-detail { font-size: 12px; color: var(–text-light); margin-top: 2px; }
+
+/* Timer */
+.timer-display {
+background: linear-gradient(135deg, var(–sage-dark), var(–sage));
+border-radius: var(–radius); padding: 28px; text-align: center;
+color: white; margin: 16px 0;
+}
+.timer-time { font-family:‘Playfair Display’,serif; font-size: 52px; font-weight:700; letter-spacing: 2px; }
+.timer-label { font-size: 13px; opacity:0.8; margin-top: 4px; }
+.timer-controls { display: flex; gap: 10px; margin-top: 14px; }
+
+/* ===========================
+NUTRITION SCREEN
+=========================== */
+.macro-card {
+margin: 0 20px 14px;
+background: var(–white); border-radius: var(–radius);
+padding: 18px; box-shadow: var(–shadow);
+}
+.macro-title { font-weight:700; font-size:16px; margin-bottom:14px; display:flex; align-items:center; gap:8px; }
+.macro-bars { display:flex; flex-direction:column; gap: 10px; }
+.macro-row { display:flex; align-items:center; gap: 10px; }
+.macro-label { width: 80px; font-size: 13px; font-weight:600; color: var(–text-light); }
+.macro-bar-bg { flex:1; height: 8px; background: var(–beige-dark); border-radius: 4px; overflow:hidden; }
+.macro-bar-fill { height:100%; border-radius:4px; transition: width 0.6s ease; }
+.macro-bar-fill.prot { background: var(–sage-dark); }
+.macro-bar-fill.carb { background: var(–gold); }
+.macro-bar-fill.fat { background: var(–brown-light); }
+.macro-val { width: 50px; text-align:right; font-size: 13px; font-weight:600; }
+
+.meal-section { padding: 0 20px; margin-bottom: 6px; }
+.meal-header { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+.meal-emoji { font-size: 22px; }
+.meal-title { font-weight:700; font-size:16px; }
+.meal-card {
+background: var(–white); border-radius: var(–radius-sm);
+padding: 14px; margin-bottom: 8px; box-shadow: var(–shadow);
+display: flex; align-items:flex-start; gap: 12px;
+}
+.meal-icon { font-size: 28px; flex-shrink:0; }
+.meal-info { flex:1; }
+.meal-name { font-weight:600; font-size:14px; }
+.meal-desc { font-size:12px; color: var(–text-light); margin:3px 0; line-height:1.4; }
+.meal-macros { display:flex; gap:8px; margin-top:6px; flex-wrap:wrap; }
+.macro-pill { font-size: 11px; padding: 2px 8px; border-radius: 20px; font-weight:600; }
+.macro-pill.p { background:#E3EDE3; color: var(–sage-dark); }
+.macro-pill.c { background:#FEF3DC; color: #9A7020; }
+.macro-pill.f { background:#F5EDE3; color: var(–brown); }
+.macro-pill.kcal { background: var(–beige-dark); color: var(–text); }
+
+/* ===========================
+PLANS SCREEN
+=========================== */
+.plans-header {
+padding: 52px 20px 24px;
+background: linear-gradient(160deg, var(–sage-dark) 0%, var(–sage-light) 100%);
+color: white; text-align: center;
+border-radius: 0 0 32px 32px;
+}
+.plans-header h1 { font-family:‘Playfair Display’,serif; font-size:26px; margin-bottom:6px; }
+.plans-header p { font-size:14px; opacity:0.85; }
+
+.trial-banner {
+margin: 20px 20px 0;
+background: linear-gradient(135deg, var(–gold), #E8C06A);
+border-radius: var(–radius); padding: 16px 18px; color: white;
+display: flex; align-items:center; gap: 14px;
+box-shadow: 0 4px 20px rgba(212,168,71,0.4);
+}
+.trial-icon { font-size: 32px; }
+.trial-info h3 { font-weight:700; font-size:16px; }
+.trial-info p { font-size:13px; opacity:0.9; margin-top:2px; }
+
+.plan-card {
+margin: 14px 20px 0;
+background: var(–white); border-radius: var(–radius);
+overflow: hidden; box-shadow: var(–shadow);
+}
+.plan-card.popular { box-shadow: 0 6px 30px rgba(74,100,78,0.2); border: 2px solid var(–sage); }
+.plan-header-bar {
+padding: 14px 18px;
+display: flex; align-items:center; justify-content:space-between;
+}
+.plan-header-bar.starter { background: var(–beige-warm); }
+.plan-header-bar.performance { background: linear-gradient(135deg, var(–sage-dark), var(–sage)); color:white; }
+.plan-header-bar.elite { background: linear-gradient(135deg, #1a1a2e, #2D4A6E); color:white; }
+.plan-name { font-family:‘Playfair Display’,serif; font-size:18px; font-weight:700; }
+.plan-price { text-align:right; }
+.plan-price .amount { font-size:22px; font-weight:700; font-family:‘Playfair Display’,serif; }
+.plan-price .period { font-size:12px; opacity:0.7; }
+.popular-badge {
+background: var(–sage-dark); color:white; font-size:11px; font-weight:700;
+padding: 4px 12px; border-radius: 20px; display:inline-block; margin-bottom:4px;
+}
+.plan-features { padding: 14px 18px 18px; }
+.feature-item { display:flex; align-items:flex-start; gap:10px; padding: 6px 0; font-size:14px; }
+.feature-check { color: var(–sage-dark); font-size:16px; flex-shrink:0; margin-top:1px; }
+.feature-lock { color: #ccc; font-size:16px; flex-shrink:0; margin-top:1px; }
+
+/* ===========================
+PROFILE SCREEN
+=========================== */
+.profile-header {
+padding: 52px 20px 28px;
+background: linear-gradient(160deg, var(–brown) 0%, var(–brown-light) 100%);
+color: white; text-align: center;
+border-radius: 0 0 32px 32px;
+position: relative; overflow: hidden;
+}
+.profile-avatar {
+width: 80px; height: 80px; border-radius: 50%;
+background: rgba(255,255,255,0.2);
+display: flex; align-items:center; justify-content:center;
+font-size: 36px; margin: 0 auto 12px;
+border: 3px solid rgba(255,255,255,0.4);
+}
+.profile-name { font-family:‘Playfair Display’,serif; font-size:22px; font-weight:700; }
+.profile-plan { font-size:13px; opacity:0.85; margin-top:4px; }
+.profile-badge {
+display:inline-flex; align-items:center; gap:6px;
+background: rgba(255,255,255,0.2); padding: 5px 14px; border-radius:20px;
+font-size:12px; font-weight:600; margin-top:10px;
+}
+
+.profile-stats { display:flex; gap:10px; padding: 20px 20px 0; }
+.profile-stat { flex:1; background: var(–white); border-radius: var(–radius-sm); padding:14px; text-align:center; box-shadow:var(–shadow); }
+.profile-stat-val { font-family:‘Playfair Display’,serif; font-size:20px; font-weight:700; color: var(–sage-dark); }
+.profile-stat-lbl { font-size:11px; color: var(–text-light); margin-top:2px; }
+
+.settings-section { padding: 20px 20px 0; }
+.settings-item {
+background: var(–white); border-radius: var(–radius-sm);
+padding: 14px 16px; margin-bottom: 8px;
+display:flex; align-items:center; gap:14px;
+cursor:pointer; transition: opacity 0.2s;
+box-shadow: var(–shadow);
+}
+.settings-item:active { opacity:0.7; }
+.settings-icon { font-size: 22px; }
+.settings-label { flex:1; font-weight:500; font-size:15px; }
+.settings-arrow { color: var(–text-light); font-size:18px; }
+
+/* ===========================
+COACH AI SCREEN
+=========================== */
+.coach-header {
+padding: 52px 20px 20px;
+background: linear-gradient(160deg, #1a2e20 0%, var(–sage-dark) 100%);
+color: white;
+}
+.coach-avatar-row { display:flex; align-items:center; gap:14px; margin-bottom:6px; }
+.coach-avatar { width:48px; height:48px; border-radius:50%; background: rgba(255,255,255,0.15); display:flex; align-items:center; justify-content:center; font-size:22px; border:2px solid rgba(255,255,255,0.3); }
+.coach-title h2 { font-family:‘Playfair Display’,serif; font-size:22px; }
+.coach-title p { font-size:13px; opacity:0.8; }
+.coach-online { display:flex; align-items:center; gap:6px; font-size:12px; margin-top:6px; }
+.dot-online { width:8px; height:8px; border-radius:50%; background:#4ade80; animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+.chat-area { padding: 16px 16px 0; display:flex; flex-direction:column; gap:12px; min-height:200px; }
+.chat-bubble { max-width: 82%; padding: 12px 16px; border-radius: 18px; font-size:14px; line-height:1.5; animation: fadeIn 0.3s; }
+.chat-bubble.ai { background: var(–white); color: var(–text); border-radius: 4px 18px 18px 18px; box-shadow: var(–shadow); align-self:flex-start; }
+.chat-bubble.user { background: var(–sage-dark); color:white; border-radius: 18px 4px 18px 18px; align-self:flex-end; }
+.chat-bubble.typing { background: var(–white); box-shadow: var(–shadow); align-self:flex-start; padding: 14px 20px; }
+.typing-dots { display:flex; gap:4px; }
+.typing-dot { width:7px; height:7px; border-radius:50%; background: var(–sage); animation: typing 1.2s infinite; }
+.typing-dot:nth-child(2) { animation-delay:0.2s; }
+.typing-dot:nth-child(3) { animation-delay:0.4s; }
+@keyframes typing { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-5px)} }
+
+.chat-input-bar {
+padding: 12px 16px; background: var(–white);
+display:flex; align-items:center; gap:10px;
+border-top: 1px solid var(–beige-dark);
+position:sticky; bottom:80px;
+}
+.chat-input {
+flex:1; border: 2px solid var(–beige-dark); border-radius:50px;
+padding: 10px 16px; font-family:‘DM Sans’,sans-serif; font-size:14px;
+outline:none; background: var(–beige); color: var(–text);
+transition: border-color 0.2s;
+}
+.chat-input:focus { border-color: var(–sage); }
+.chat-send { width:40px; height:40px; border-radius:50%; background: var(–sage-dark); border:none; color:white; font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:transform 0.15s; }
+.chat-send:active { transform:scale(0.9); }
+
+.quick-questions { padding: 12px 16px; display:flex; flex-wrap:wrap; gap:8px; }
+.quick-q { background: var(–beige-dark); border:none; border-radius:20px; padding: 8px 14px; font-size:12px; font-weight:500; cursor:pointer; transition:all 0.2s; color: var(–text); font-family:‘DM Sans’,sans-serif; }
+.quick-q:active { background: var(–sage-light); color:white; }
+
+/* ===========================
+ONBOARDING
+=========================== */
+#onboarding {
+display:flex; flex-direction:column; min-height:100vh;
+padding-bottom: 0;
+}
+.onboard-step { display:none; flex:1; padding: 52px 24px 24px; flex-direction:column; }
+.onboard-step.active { display:flex; }
+.onboard-emoji { font-size: 64px; margin-bottom:16px; }
+.onboard-title { font-family:‘Playfair Display’,serif; font-size:28px; font-weight:700; margin-bottom:10px; line-height:1.2; }
+.onboard-sub { font-size:15px; color: var(–text-light); line-height:1.6; margin-bottom:32px; }
+.onboard-options { display:flex; flex-direction:column; gap:10px; margin-bottom: auto; }
+.onboard-opt {
+background: var(–white); border: 2px solid var(–beige-dark);
+border-radius: var(–radius); padding: 16px 18px;
+display:flex; align-items:center; gap:14px;
+cursor:pointer; transition:all 0.2s;
+}
+.onboard-opt.selected { border-color: var(–sage-dark); background: #E3EDE3; }
+.onboard-opt-emoji { font-size:24px; }
+.onboard-opt-text { font-weight:600; font-size:15px; }
+.onboard-opt-sub { font-size:12px; color: var(–text-light); margin-top:2px; }
+.onboard-actions { margin-top:24px; display:flex; flex-direction:column; gap:10px; }
+.onboard-input {
+background: var(–white); border: 2px solid var(–beige-dark);
+border-radius: var(–radius-sm); padding: 14px 16px;
+font-family:‘DM Sans’,sans-serif; font-size:16px; color: var(–text);
+width:100%; outline:none; transition: border-color 0.2s; margin-bottom:10px;
+}
+.onboard-input:focus { border-color: var(–sage); }
+.progress-bar-onboard { height:4px; background: var(–beige-dark); border-radius:2px; margin-bottom: 32px; }
+.progress-fill { height:100%; background: var(–sage-dark); border-radius:2px; transition: width 0.4s; }
+
+/* Misc */
+.divider { height:1px; background: var(–beige-dark); margin: 6px 0; }
+.badge-locked { display:inline-flex; align-items:center; gap:5px; font-size:11px; background:#FFF3E0; color:#B06A00; padding:3px 10px; border-radius:20px; font-weight:600; }
+.badge-free { display:inline-flex; align-items:center; gap:5px; font-size:11px; background:#E3EDE3; color:var(–sage-dark); padding:3px 10px; border-radius:20px; font-weight:600; }
+.empty-state { text-align:center; padding: 40px 20px; color: var(–text-light); }
+.empty-state .es-emoji { font-size:48px; margin-bottom:12px; }
+.empty-state p { font-size:14px; line-height:1.6; }
+</style>
+
+</head>
+<body>
+
+<!-- ==================== ONBOARDING ==================== -->
+
+<div id="onboarding" class="screen active">
+  <!-- Step 1 : Bienvenue -->
+  <div class="onboard-step active" id="step1">
+    <div class="progress-bar-onboard"><div class="progress-fill" style="width:20%"></div></div>
+    <div class="onboard-emoji">🌿</div>
+    <h1 class="onboard-title">Bienvenue dans<br>Only Leveling</h1>
+    <p class="onboard-sub">Ton coach personnel, tes programmes, ta nutrition. Tout en un, pour progresser chaque jour.</p>
+    <div style="flex:1"></div>
+    <div class="onboard-actions">
+      <button class="btn btn-primary" onclick="nextStep(2)">Commencer 🚀</button>
+    </div>
+  </div>
+
+  <!-- Step 2 : Prénom -->
+
+  <div class="onboard-step" id="step2">
+    <div class="progress-bar-onboard"><div class="progress-fill" style="width:40%"></div></div>
+    <div class="onboard-emoji">👋</div>
+    <h1 class="onboard-title">Comment tu t'appelles ?</h1>
+    <p class="onboard-sub">On veut personnaliser ton expérience.</p>
+    <input class="onboard-input" id="nameInput" type="text" placeholder="Ton prénom..." />
+    <div style="flex:1"></div>
+    <div class="onboard-actions">
+      <button class="btn btn-primary" onclick="nextStep(3)">Continuer →</button>
+    </div>
+  </div>
+
+  <!-- Step 3 : Objectif -->
+
+  <div class="onboard-step" id="step3">
+    <div class="progress-bar-onboard"><div class="progress-fill" style="width:60%"></div></div>
+    <div class="onboard-emoji">🎯</div>
+    <h1 class="onboard-title">Quel est ton objectif ?</h1>
+    <p class="onboard-sub">Cela adaptera tes séances et ta nutrition.</p>
+    <div class="onboard-options">
+      <div class="onboard-opt selected" onclick="selectGoal(this,'perte')" data-goal="perte">
+        <span class="onboard-opt-emoji">🔥</span>
+        <div>
+          <div class="onboard-opt-text">Perte de poids</div>
+          <div class="onboard-opt-sub">Brûler des graisses, affiner la silhouette</div>
+        </div>
+      </div>
+      <div class="onboard-opt" onclick="selectGoal(this,'muscle')" data-goal="muscle">
+        <span class="onboard-opt-emoji">💪</span>
+        <div>
+          <div class="onboard-opt-text">Renforcement musculaire</div>
+          <div class="onboard-opt-sub">Gagner en force et en volume</div>
+        </div>
+      </div>
+    </div>
+    <div class="onboard-actions">
+      <button class="btn btn-primary" onclick="nextStep(4)">Continuer →</button>
+    </div>
+  </div>
+
+  <!-- Step 4 : Niveau -->
+
+  <div class="onboard-step" id="step4">
+    <div class="progress-bar-onboard"><div class="progress-fill" style="width:80%"></div></div>
+    <div class="onboard-emoji">📊</div>
+    <h1 class="onboard-title">Ton niveau actuel ?</h1>
+    <p class="onboard-sub">Pour adapter l'intensité de tes séances.</p>
+    <div class="onboard-options">
+      <div class="onboard-opt selected" onclick="selectLevel(this,'debutant')">
+        <span class="onboard-opt-emoji">🌱</span>
+        <div>
+          <div class="onboard-opt-text">Débutant</div>
+          <div class="onboard-opt-sub">Je commence ou reprends le sport</div>
+        </div>
+      </div>
+      <div class="onboard-opt" onclick="selectLevel(this,'intermediaire')">
+        <span class="onboard-opt-emoji">⚡</span>
+        <div>
+          <div class="onboard-opt-text">Intermédiaire</div>
+          <div class="onboard-opt-sub">Je m'entraîne régulièrement</div>
+        </div>
+      </div>
+      <div class="onboard-opt" onclick="selectLevel(this,'avance')">
+        <span class="onboard-opt-emoji">🏆</span>
+        <div>
+          <div class="onboard-opt-text">Avancé</div>
+          <div class="onboard-opt-sub">Je cherche à me dépasser</div>
+        </div>
+      </div>
+    </div>
+    <div class="onboard-actions">
+      <button class="btn btn-primary" onclick="finishOnboarding()">C'est parti ! 🌿</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== MAIN APP ==================== -->
+
+<div id="app" style="display:none">
+
+  <!-- HOME -->
+
+  <div id="home" class="screen active">
+    <div class="home-header">
+      <div class="home-greeting" id="homeGreeting">Bonjour 👋</div>
+      <div class="home-name" id="homeName">Alex</div>
+      <div class="streak-card">
+        <div class="streak-flame" id="streakFlame">🔥</div>
+        <div class="streak-info">
+          <div class="streak-days" id="streakDays">0</div>
+          <div class="streak-label">jours de suite 🔥 Win Streak</div>
+          <div class="streak-dots" id="streakDots"></div>
+        </div>
+      </div>
+    </div>
+
+```
+<p class="section-title">Tes séances du jour 📅</p>
+<div class="today-sessions" id="todaySessions"></div>
+
+<p class="section-title">Ta semaine 📈</p>
+<div class="stats-row">
+  <div class="stat-box">
+    <div class="stat-val" id="statSeances">0</div>
+    <div class="stat-lbl">Séances</div>
+  </div>
+  <div class="stat-box">
+    <div class="stat-val" id="statKcal">0</div>
+    <div class="stat-lbl">kcal brûlées</div>
+  </div>
+  <div class="stat-box">
+    <div class="stat-val" id="statMins">0</div>
+    <div class="stat-lbl">Minutes</div>
+  </div>
+</div>
+
+<p class="section-title">Objectif du jour 🎯</p>
+<div style="padding:0 20px 10px">
+  <div class="card">
+    <div id="goalCard" style="font-size:14px; line-height:1.7; color:var(--text-light)">
+      Choisissez votre objectif dans le profil pour voir ici votre programme personnalisé.
+    </div>
+  </div>
+</div>
+```
+
+  </div>
+
+  <!-- SESSIONS -->
+
+  <div id="sessions" class="screen">
+    <div class="app-header">
+      <div class="header-title">Séances 🏋️</div>
+      <div class="header-sub">Programme 30 jours personnalisé</div>
+    </div>
+    <div class="category-tabs">
+      <div class="cat-tab active" onclick="switchCat('perte',this)">🔥 Perte de poids</div>
+      <div class="cat-tab" onclick="switchCat('muscle',this)">💪 Renforcement</div>
+    </div>
+    <div class="sessions-grid" id="sessionsGrid"></div>
+  </div>
+
+  <!-- NUTRITION -->
+
+  <div id="nutrition" class="screen">
+    <div class="app-header">
+      <div class="header-title">Nutrition 🥗</div>
+      <div class="header-sub" id="nutritionSub">Adapté à ton objectif</div>
+    </div>
+
+```
+<p class="section-title">Tes macros du jour</p>
+<div class="macro-card">
+  <div class="macro-title">📊 Répartition journalière</div>
+  <div class="macro-bars">
+    <div class="macro-row">
+      <div class="macro-label">🥩 Protéines</div>
+      <div class="macro-bar-bg"><div class="macro-bar-fill prot" id="barProt" style="width:0%"></div></div>
+      <div class="macro-val" id="valProt">0g</div>
+    </div>
+    <div class="macro-row">
+      <div class="macro-label">🌾 Glucides</div>
+      <div class="macro-bar-bg"><div class="macro-bar-fill carb" id="barCarb" style="width:0%"></div></div>
+      <div class="macro-val" id="valCarb">0g</div>
+    </div>
+    <div class="macro-row">
+      <div class="macro-label">🥑 Lipides</div>
+      <div class="macro-bar-bg"><div class="macro-bar-fill fat" id="barFat" style="width:0%"></div></div>
+      <div class="macro-val" id="valFat">0g</div>
+    </div>
+  </div>
+  <div style="margin-top:14px; padding-top:12px; border-top:1px solid var(--beige-dark); display:flex; align-items:center; justify-content:space-between;">
+    <span style="font-size:13px; color:var(--text-light)">Total journalier</span>
+    <span style="font-weight:700; font-size:16px; color:var(--sage-dark)" id="totalKcal">0 kcal</span>
+  </div>
+</div>
+
+<div id="nutritionContent"></div>
+```
+
+  </div>
+
+  <!-- PLANS -->
+
+  <div id="plans" class="screen">
+    <div class="plans-header">
+      <h1>Choisis ton plan 🌿</h1>
+      <p>Commence gratuitement, évolue à ton rythme</p>
+    </div>
+
+```
+<!-- Essai gratuit -->
+<div class="trial-banner">
+  <div class="trial-icon">⭐</div>
+  <div class="trial-info">
+    <h3>Essai gratuit 7 jours</h3>
+    <p>Accès complet, sans engagement, sans CB</p>
+  </div>
+</div>
+
+<!-- Plan Starter -->
+<div class="plan-card">
+  <div class="plan-header-bar starter">
+    <div>
+      <div class="plan-name">Starter 🌱</div>
+      <div style="font-size:12px; color:var(--text-light); margin-top:2px">Pour débuter</div>
+    </div>
+    <div class="plan-price">
+      <div class="amount" style="color:var(--sage-dark)">9,99€</div>
+      <div class="period" style="color:var(--text-light)">/mois</div>
+    </div>
+  </div>
+  <div class="plan-features">
+    <div class="feature-item"><span class="feature-check">✅</span> 3 séances guidées complètes</div>
+    <div class="feature-item"><span class="feature-check">✅</span> Win Streak quotidienne 🔥</div>
+    <div class="feature-item"><span class="feature-check">✅</span> Aperçu nutrition simple</div>
+    <div class="feature-item"><span class="feature-check">✅</span> Profil personnalisé</div>
+    <div class="feature-item"><span class="feature-lock">🔒</span> <span style="color:#999">Programme 30 jours complet</span></div>
+    <div class="feature-item"><span class="feature-lock">🔒</span> <span style="color:#999">Suivi calorique détaillé</span></div>
+    <div style="margin-top:14px"><button class="btn btn-outline btn-sm" onclick="selectPlan('starter')">Choisir Starter</button></div>
+  </div>
+</div>
+
+<!-- Plan Performance -->
+<div class="plan-card popular">
+  <div class="plan-header-bar performance">
+    <div>
+      <div style="margin-bottom:4px"><span class="popular-badge">⭐ Populaire</span></div>
+      <div class="plan-name">Performance 💪</div>
+    </div>
+    <div class="plan-price" style="color:white">
+      <div class="amount">19,99€</div>
+      <div class="period">/mois</div>
+    </div>
+  </div>
+  <div class="plan-features">
+    <div class="feature-item"><span class="feature-check">✅</span> 20 séances complètes</div>
+    <div class="feature-item"><span class="feature-check">✅</span> Programme 30 jours structuré</div>
+    <div class="feature-item"><span class="feature-check">✅</span> Win Streak + historique</div>
+    <div class="feature-item"><span class="feature-check">✅</span> Suivi calorique complet</div>
+    <div class="feature-item"><span class="feature-check">✅</span> Historique des progrès</div>
+    <div class="feature-item"><span class="feature-check">✅</span> Nutrition : calories & macros</div>
+    <div class="feature-item"><span class="feature-check">✅</span> Plans repas hebdomadaires</div>
+    <div class="feature-item"><span class="feature-lock">🔒</span> <span style="color:#999">Coach IA personnel</span></div>
+    <div style="margin-top:14px"><button class="btn btn-primary btn-sm" onclick="selectPlan('performance')">Choisir Performance</button></div>
+  </div>
+</div>
+
+<!-- Plan Elite -->
+<div class="plan-card" style="margin-bottom:20px">
+  <div class="plan-header-bar elite">
+    <div>
+      <div class="plan-name">Elite 🏆</div>
+      <div style="font-size:12px; opacity:0.7; margin-top:2px">Tout inclus</div>
+    </div>
+    <div class="plan-price" style="color:white">
+      <div class="amount">29,99€</div>
+      <div class="period">/mois</div>
+    </div>
+  </div>
+  <div class="plan-features">
+    <div class="feature-item"><span class="feature-check">✅</span> 80+ séances (Yoga, Force, HIIT)</div>
+    <div class="feature-item"><span class="feature-check">✅</span> Nutrition au gramme près 🎯</div>
+    <div class="feature-item"><span class="feature-check">✅</span> Calcul adaptatif selon objectifs</div>
+    <div class="feature-item"><span class="feature-check">✅</span> Coach IA personnel 24/7 🤖</div>
+    <div class="feature-item"><span class="feature-check">✅</span> Communauté privée motivée 👥</div>
+    <div class="feature-item"><span class="feature-check">✅</span> Défis communautaires & classements</div>
+    <div class="feature-item"><span class="feature-check">✅</span> Analyse de progression avancée</div>
+    <div class="feature-item"><span class="feature-check">✅</span> Tout du plan Performance</div>
+    <div style="margin-top:14px"><button class="btn btn-gold btn-sm" onclick="selectPlan('elite')">Choisir Elite 🏆</button></div>
+  </div>
+</div>
+```
+
+  </div>
+
+  <!-- COACH IA -->
+
+  <div id="coach" class="screen">
+    <div class="coach-header">
+      <div class="coach-avatar-row">
+        <div class="coach-avatar">🤖</div>
+        <div class="coach-title">
+          <h2>Coach IA</h2>
+          <p>Ton expert fitness personnel</p>
+        </div>
+      </div>
+      <div class="coach-online"><div class="dot-online"></div> En ligne maintenant</div>
+    </div>
+
+```
+<div class="quick-questions">
+  <button class="quick-q" onclick="quickQuestion('Comment perdre du ventre rapidement ?')">🔥 Perdre du ventre</button>
+  <button class="quick-q" onclick="quickQuestion('Quel programme pour prendre du muscle ?')">💪 Prise de muscle</button>
+  <button class="quick-q" onclick="quickQuestion('Que manger avant une séance ?')">🥗 Nutrition pré-séance</button>
+  <button class="quick-q" onclick="quickQuestion('Comment bien récupérer après sport ?')">😴 Récupération</button>
+  <button class="quick-q" onclick="quickQuestion('Combien de protéines dois-je manger par jour ?')">🥩 Protéines/jour</button>
+  <button class="quick-q" onclick="quickQuestion('Est-ce que le cardio fait perdre du muscle ?')">🏃 Cardio & muscle</button>
+</div>
+
+<div class="chat-area" id="chatArea">
+  <div class="chat-bubble ai">
+    Salut ! 👋 Je suis ton coach IA personnel. Pose-moi n'importe quelle question sur l'entraînement, la nutrition, la récupération ou la motivation. Je suis là pour t'aider à progresser ! 🌿💪
+  </div>
+</div>
+
+<div class="chat-input-bar">
+  <input class="chat-input" id="chatInput" type="text" placeholder="Pose ta question..." />
+  <button class="chat-send" onclick="sendMessage()">➤</button>
+</div>
+```
+
+  </div>
+
+  <!-- PROFILE -->
+
+  <div id="profile" class="screen">
+    <div class="profile-header">
+      <div class="profile-avatar" id="profileAvatar">😊</div>
+      <div class="profile-name" id="profileName">Alex</div>
+      <div class="profile-plan" id="profilePlanLabel">Plan Gratuit</div>
+      <div class="profile-badge" id="profileGoalBadge">🎯 Objectif non défini</div>
+    </div>
+
+```
+<div class="profile-stats">
+  <div class="profile-stat">
+    <div class="profile-stat-val" id="pStatSeances">0</div>
+    <div class="profile-stat-lbl">Séances</div>
+  </div>
+  <div class="profile-stat">
+    <div class="profile-stat-val" id="pStatStreak">0</div>
+    <div class="profile-stat-lbl">Streak 🔥</div>
+  </div>
+  <div class="profile-stat">
+    <div class="profile-stat-val" id="pStatDays">0</div>
+    <div class="profile-stat-lbl">Jours actifs</div>
+  </div>
+</div>
+
+<p class="section-title">Mon profil</p>
+<div style="padding:0 20px">
+  <div class="card">
+    <div style="display:flex; flex-direction:column; gap:12px">
+      <div>
+        <label style="font-size:12px; color:var(--text-light); font-weight:600; display:block; margin-bottom:6px">PRÉNOM</label>
+        <input class="onboard-input" id="editName" placeholder="Ton prénom" style="margin-bottom:0"/>
+      </div>
+      <div>
+        <label style="font-size:12px; color:var(--text-light); font-weight:600; display:block; margin-bottom:6px">OBJECTIF</label>
+        <div style="display:flex; gap:10px">
+          <div class="onboard-opt" id="optPerte" onclick="setGoal('perte')" style="flex:1; padding:12px">
+            <span>🔥</span>
+            <div class="onboard-opt-text" style="font-size:13px">Perte de poids</div>
+          </div>
+          <div class="onboard-opt" id="optMuscle" onclick="setGoal('muscle')" style="flex:1; padding:12px">
+            <span>💪</span>
+            <div class="onboard-opt-text" style="font-size:13px">Muscle</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <label style="font-size:12px; color:var(--text-light); font-weight:600; display:block; margin-bottom:6px">NIVEAU</label>
+        <div style="display:flex; gap:8px">
+          <div class="onboard-opt" id="lvlDeb" onclick="setLevel('debutant')" style="flex:1; padding:10px; justify-content:center">
+            <div class="onboard-opt-text" style="font-size:12px">🌱 Débutant</div>
+          </div>
+          <div class="onboard-opt" id="lvlInt" onclick="setLevel('intermediaire')" style="flex:1; padding:10px; justify-content:center">
+            <div class="onboard-opt-text" style="font-size:12px">⚡ Inter.</div>
+          </div>
+          <div class="onboard-opt" id="lvlAdv" onclick="setLevel('avance')" style="flex:1; padding:10px; justify-content:center">
+            <div class="onboard-opt-text" style="font-size:12px">🏆 Avancé</div>
+          </div>
+        </div>
+      </div>
+      <button class="btn btn-primary" onclick="saveProfile()">💾 Sauvegarder</button>
+    </div>
+  </div>
+</div>
+
+<div class="settings-section">
+  <div class="settings-item" onclick="showTab('plans')">
+    <span class="settings-icon">⭐</span>
+    <span class="settings-label">Mon abonnement</span>
+    <span class="settings-arrow">›</span>
+  </div>
+  <div class="settings-item" onclick="resetProgress()">
+    <span class="settings-icon">🔄</span>
+    <span class="settings-label">Réinitialiser la progression</span>
+    <span class="settings-arrow">›</span>
+  </div>
+  <div class="settings-item">
+    <span class="settings-icon">🔔</span>
+    <span class="settings-label">Notifications</span>
+    <span class="settings-arrow">›</span>
+  </div>
+  <div class="settings-item">
+    <span class="settings-icon">🔒</span>
+    <span class="settings-label">Confidentialité</span>
+    <span class="settings-arrow">›</span>
+  </div>
+</div>
+<div style="height:20px"></div>
+```
+
+  </div>
+
+  <!-- BOTTOM NAV -->
+
+  <nav class="bottom-nav">
+    <div class="nav-item active" onclick="showTab('home')" id="nav-home">
+      <span class="nav-icon">🏠</span>
+      <span>Accueil</span>
+    </div>
+    <div class="nav-item" onclick="showTab('sessions')" id="nav-sessions">
+      <span class="nav-icon">🏋️</span>
+      <span>Séances</span>
+    </div>
+    <div class="nav-item" onclick="showTab('nutrition')" id="nav-nutrition">
+      <span class="nav-icon">🥗</span>
+      <span>Nutrition</span>
+    </div>
+    <div class="nav-item" onclick="showTab('coach')" id="nav-coach">
+      <span class="nav-icon">🤖</span>
+      <span>Coach IA</span>
+    </div>
+    <div class="nav-item" onclick="showTab('plans')" id="nav-plans">
+      <span class="nav-icon">⭐</span>
+      <span>Plans</span>
+    </div>
+    <div class="nav-item" onclick="showTab('profile')" id="nav-profile">
+      <span class="nav-icon">👤</span>
+      <span>Profil</span>
+    </div>
+  </nav>
+
+</div>
+
+<!-- SESSION MODAL -->
+
+<div class="modal" id="sessionModal" onclick="closeModal(event)">
+  <div class="modal-sheet" id="modalContent">
+    <div class="modal-handle"></div>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// DATA
+// ============================================================
+
+const SESSIONS_PERTE = [
+  { day:1, title:"Full Body Brûle-Graisses", emoji:"🔥", duration:"35 min", kcal:280, level:"Débutant", tags:["Cardio","Full body","Débutant"], exercises:[
+    {e:"🏃",n:"Jumping jacks",d:"3 séries × 30 reps"},
+    {e:"🦵",n:"Squats",d:"3 × 15 reps"},
+    {e:"💪",n:"Pompes modifiées",d:"3 × 10 reps"},
+    {e:"🤸",n:"Mountain climbers",d:"3 × 20 reps"},
+    {e:"🧘",n:"Planche",d:"3 × 30 sec"},
+  ]},
+  { day:2, title:"HIIT Cardio Express", emoji:"⚡", duration:"25 min", kcal:320, level:"Intermédiaire", tags:["HIIT","Cardio","Intensif"], exercises:[
+    {e:"⚡",n:"Burpees",d:"4 × 10 reps"},
+    {e:"🦵",n:"Jump squats",d:"4 × 12 reps"},
+    {e:"🏃",n:"Sprint sur place",d:"4 × 30 sec"},
+    {e:"💪",n:"Dips chaise",d:"3 × 12 reps"},
+    {e:"🤸",n:"High knees",d:"4 × 40 sec"},
+  ]},
+  { day:3, title:"Récupération Active", emoji:"🧘", duration:"30 min", kcal:150, level:"Tous niveaux", tags:["Récup","Yoga","Doux"], exercises:[
+    {e:"🧘",n:"Salutation au soleil",d:"5 cycles"},
+    {e:"🦵",n:"Fente basse",d:"2 × 45 sec chaque"},
+    {e:"🌊",n:"Chat-vache",d:"2 × 10 cycles"},
+    {e:"💤",n:"Respiration profonde",d:"5 min"},
+  ]},
+  { day:4, title:"Circuit Lower Body", emoji:"🦵", duration:"40 min", kcal:350, level:"Intermédiaire", tags:["Jambes","Fessiers","Tonification"], exercises:[
+    {e:"🦵",n:"Squats sumo",d:"4 × 15 reps"},
+    {e:"🍑",n:"Hip thrust",d:"4 × 12 reps"},
+    {e:"🏃",n:"Fentes alternées",d:"3 × 10 reps / jambe"},
+    {e:"⚡",n:"Calf raises",d:"3 × 20 reps"},
+    {e:"🦵",n:"Leg press chaise",d:"3 × 15 reps"},
+  ]},
+  { day:5, title:"Upper Body Léger", emoji:"💪", duration:"35 min", kcal:240, level:"Débutant", tags:["Haut du corps","Tonification"], exercises:[
+    {e:"💪",n:"Pompes",d:"4 × 12 reps"},
+    {e:"🤸",n:"Dips banc",d:"3 × 10 reps"},
+    {e:"💪",n:"Curl biceps",d:"3 × 12 reps"},
+    {e:"🧘",n:"Gainage latéral",d:"3 × 30 sec"},
+  ]},
+  { day:6, title:"Cardio Danse", emoji:"💃", duration:"30 min", kcal:300, level:"Tous niveaux", tags:["Cardio","Fun","Énergie"], exercises:[
+    {e:"💃",n:"Zumba basic",d:"5 min"},
+    {e:"🕺",n:"Side step",d:"3 × 1 min"},
+    {e:"🏃",n:"Sautillements rythmés",d:"3 × 45 sec"},
+    {e:"💃",n:"Chorés freestyle",d:"10 min"},
+  ]},
+  { day:7, title:"Repos Actif 🌿", emoji:"🌿", duration:"20 min", kcal:80, level:"Tous", tags:["Repos","Étirements"], exercises:[
+    {e:"🧘",n:"Étirements globaux",d:"15 min"},
+    {e:"🌬️",n:"Méditation",d:"5 min"},
+  ]},
+  { day:8, title:"Tabata Intensif", emoji:"🌪️", duration:"30 min", kcal:380, level:"Avancé", tags:["Tabata","HIIT","Brûle-graisses"], exercises:[
+    {e:"🌪️",n:"Tabata 1 : Burpees",d:"8 × 20sec/10sec"},
+    {e:"⚡",n:"Tabata 2 : Jump squat",d:"8 × 20sec/10sec"},
+    {e:"💪",n:"Tabata 3 : Pompes",d:"8 × 20sec/10sec"},
+  ]},
+  { day:9, title:"Abdos & Core", emoji:"🎯", duration:"25 min", kcal:180, level:"Intermédiaire", tags:["Abdos","Core","Gainage"], exercises:[
+    {e:"🎯",n:"Crunchs",d:"4 × 20 reps"},
+    {e:"🧘",n:"Planche",d:"4 × 45 sec"},
+    {e:"🌊",n:"Russian twists",d:"3 × 20 reps"},
+    {e:"⚡",n:"Mountain climbers",d:"3 × 30 sec"},
+    {e:"🎯",n:"Leg raises",d:"3 × 15 reps"},
+  ]},
+  { day:10, title:"Marche Dynamique", emoji:"🚶", duration:"45 min", kcal:220, level:"Tous", tags:["Cardio doux","Récup"], exercises:[
+    {e:"🚶",n:"Marche rapide",d:"45 min (dehors ou tapis)"},
+    {e:"💨",n:"Interval : accélérations",d:"5 × 1 min rapide"},
+  ]},
+];
+
+for(let d=11; d<=30; d++){
+  const templates=[
+    {title:`Séance Perte J${d}`,emoji:"🔥",duration:"35 min",kcal:280+Math.floor(Math.random()*100),level:"Intermédiaire",tags:["Cardio","HIIT"],exercises:[
+      {e:"⚡",n:"Circuit training",d:"5 exercices × 3 tours"},
+      {e:"🏃",n:"Cardio fractionné",d:"15 min"},
+      {e:"🧘",n:"Étirements",d:"5 min"},
+    ]},
+    {title:`Circuit Mixte J${d}`,emoji:"💪",duration:"40 min",kcal:300+Math.floor(Math.random()*80),level:"Tous niveaux",tags:["Full body","Tonification"],exercises:[
+      {e:"🦵",n:"Lower body",d:"4 exercices"},
+      {e:"💪",n:"Upper body",d:"3 exercices"},
+      {e:"🎯",n:"Core",d:"2 exercices"},
+    ]},
+  ];
+  SESSIONS_PERTE.push({day:d, ...templates[d%2], locked: d>3});
+}
+
+const SESSIONS_MUSCLE = [
+  { day:1, title:"Push Day – Poitrine & Épaules", emoji:"💪", duration:"45 min", kcal:260, level:"Intermédiaire", tags:["Push","Force","Hypertrophie"], exercises:[
+    {e:"💪",n:"Développé couché",d:"4 × 8 reps"},
+    {e:"⬆️",n:"Développé militaire",d:"4 × 10 reps"},
+    {e:"🏋️",n:"Élévations latérales",d:"3 × 12 reps"},
+    {e:"💪",n:"Dips lestés",d:"3 × 8 reps"},
+    {e:"🤸",n:"Triceps cable",d:"3 × 12 reps"},
+  ]},
+  { day:2, title:"Pull Day – Dos & Biceps", emoji:"🏋️", duration:"45 min", kcal:270, level:"Intermédiaire", tags:["Pull","Dos","Force"], exercises:[
+    {e:"🏋️",n:"Tractions",d:"4 × 6 reps"},
+    {e:"💪",n:"Rowing barre",d:"4 × 8 reps"},
+    {e:"🔗",n:"Tirage poulie haute",d:"3 × 12 reps"},
+    {e:"💪",n:"Curl marteau",d:"3 × 12 reps"},
+    {e:"🌊",n:"Face pulls",d:"3 × 15 reps"},
+  ]},
+  { day:3, title:"Leg Day – Cuisses & Fessiers", emoji:"🦵", duration:"50 min", kcal:310, level:"Intermédiaire", tags:["Jambes","Squats","Force"], exercises:[
+    {e:"🦵",n:"Squat barre",d:"5 × 5 reps"},
+    {e:"🏋️",n:"Soulevé de terre",d:"4 × 6 reps"},
+    {e:"🍑",n:"Hip thrust lest",d:"4 × 10 reps"},
+    {e:"🦵",n:"Presse à cuisses",d:"3 × 12 reps"},
+    {e:"⚡",n:"Extensions jambes",d:"3 × 15 reps"},
+  ]},
+  { day:4, title:"Repos Actif", emoji:"🧘", duration:"25 min", kcal:100, level:"Tous", tags:["Récup","Mobilité"], exercises:[
+    {e:"🧘",n:"Foam roller",d:"10 min"},
+    {e:"🌊",n:"Mobilité articulaire",d:"10 min"},
+    {e:"💤",n:"Respiration",d:"5 min"},
+  ]},
+  { day:5, title:"Push Day 2 – Variation", emoji:"⚡", duration:"45 min", kcal:265, level:"Intermédiaire", tags:["Push","Force"], exercises:[
+    {e:"⚡",n:"Développé incliné",d:"4 × 8 reps"},
+    {e:"💪",n:"Élévations frontales",d:"3 × 12 reps"},
+    {e:"🏋️",n:"Écarté haltères",d:"3 × 12 reps"},
+    {e:"🤸",n:"Extensions triceps",d:"4 × 10 reps"},
+  ]},
+  { day:6, title:"Full Body Force", emoji:"🏆", duration:"55 min", kcal:330, level:"Avancé", tags:["Force","Compound","Intensif"], exercises:[
+    {e:"🏆",n:"Deadlift",d:"5 × 3 reps"},
+    {e:"💪",n:"Bench press",d:"5 × 4 reps"},
+    {e:"🏋️",n:"Tractions lestées",d:"4 × 5 reps"},
+    {e:"🦵",n:"Overhead squat",d:"3 × 6 reps"},
+  ]},
+  { day:7, title:"Repos complet 💤", emoji:"💤", duration:"—", kcal:0, level:"Tous", tags:["Repos","Récupération"], exercises:[
+    {e:"💤",n:"Repos musculaire",d:"24h"},
+    {e:"🥗",n:"Nutrition récupération",d:"Protéines & glucides"},
+  ]},
+];
+
+for(let d=8; d<=30; d++){
+  SESSIONS_MUSCLE.push({
+    day:d,
+    title: d%7===0 ? `Repos Actif J${d}` : `Bloc Force J${d}`,
+    emoji: d%7===0 ? "🧘" : "🏋️",
+    duration: d%7===0 ? "25 min" : "45 min",
+    kcal: d%7===0 ? 100 : 260+Math.floor(Math.random()*80),
+    level:"Intermédiaire",
+    tags: d%7===0 ? ["Récup","Mobilité"] : ["Force","Hypertrophie","Muscle"],
+    locked: d>4,
+    exercises:[
+      {e:"💪",n:"Exercice principal",d:"4 × 8 reps"},
+      {e:"🏋️",n:"Exercice secondaire",d:"3 × 10 reps"},
+      {e:"🧘",n:"Core & mobilité",d:"10 min"},
+    ]
+  });
+}
+
+const NUTRITION_PERTE = {
+  macros:{ prot:150, carb:160, fat:55, kcal:1750 },
+  petitdej:[
+    {icon:"🥣",name:"Porridge protéiné",desc:"Flocons d'avoine + lait végétal + 1 banane + graines de chia",macros:{p:22,c:48,f:8,k:360}},
+    {icon:"🍳",name:"Œufs brouillés & légumes",desc:"2 œufs + poivron + épinards + 1 tranche pain complet",macros:{p:20,c:18,f:12,k:260}},
+    {icon:"🥤",name:"Smoothie vert minceur",desc:"Épinards + pomme + concombre + gingembre + protéine",macros:{p:24,c:28,f:4,k:240}},
+  ],
+  dejeuner:[
+    {icon:"🥗",name:"Salade poulet-quinoa",desc:"150g poulet grillé + 80g quinoa + légumes variés + vinaigrette légère",macros:{p:38,c:42,f:10,k:420}},
+    {icon:"🐟",name:"Saumon vapeur & légumes",desc:"150g saumon + brocolis + carottes + riz complet 60g",macros:{p:35,c:36,f:14,k:410}},
+    {icon:"🌯",name:"Wrap thon légumes",desc:"Tortilla complète + thon + avocat + salade + tomate",macros:{p:30,c:38,f:12,k:380}},
+  ],
+  diner:[
+    {icon:"🍲",name:"Soupe de lentilles",desc:"200g lentilles corail + courge + épices + crème végétale légère",macros:{p:18,c:35,f:5,k:260}},
+    {icon:"🥦",name:"Poulet rôti & légumes",desc:"120g poulet + courgettes + haricots verts + herbes aromatiques",macros:{p:30,c:15,f:6,k:235}},
+    {icon:"🍳",name:"Omelette aux herbes",desc:"3 œufs + champignons + persil + 1 tranche pain complet",macros:{p:24,c:16,f:14,k:285}},
+  ]
+};
+
+const NUTRITION_MUSCLE = {
+  macros:{ prot:180, carb:280, fat:70, kcal:2450 },
+  petitdej:[
+    {icon:"🥞",name:"Pancakes protéinés",desc:"100g farine avoine + 2 œufs + 1 banane + sirop d'agave",macros:{p:32,c:65,f:10,k:480}},
+    {icon:"🍳",name:"Œufs & patate douce",desc:"3 œufs + 200g patate douce + avocat ½ + pain complet",macros:{p:28,c:60,f:16,k:510}},
+    {icon:"🥤",name:"Mass gainer maison",desc:"Lait entier 400ml + 2 bananes + beurre d'amande + protéine",macros:{p:38,c:78,f:18,k:640}},
+  ],
+  dejeuner:[
+    {icon:"🍗",name:"Riz poulet prise de masse",desc:"200g poulet + 120g riz basmati + légumes sautés + olive",macros:{p:50,c:72,f:14,k:640}},
+    {icon:"🐟",name:"Thon pâtes complètes",desc:"1 boîte thon + 100g pâtes + sauce tomate + parmesan",macros:{p:44,c:78,f:12,k:600}},
+    {icon:"🥩",name:"Steak & patate douce",desc:"180g steak + 200g patate douce + haricots verts + beurre",macros:{p:46,c:52,f:18,k:570}},
+  ],
+  diner:[
+    {icon:"🐟",name:"Saumon & quinoa",desc:"180g saumon + 90g quinoa + edamame + sauce soja légère",macros:{p:46,c:48,f:18,k:560}},
+    {icon:"🍲",name:"Curry pois chiches & riz",desc:"250g pois chiches + riz 100g + lait coco léger + épices",macros:{p:28,c:75,f:12,k:520}},
+    {icon:"🍳",name:"Omelette 4 œufs & fromage",desc:"4 œufs + 30g fromage + légumes poêlés + pain de seigle",macros:{p:40,c:28,f:22,k:475}},
+  ]
+};
+
+// ============================================================
+// STATE
+// ============================================================
+let state = {
+  name: "Alex",
+  goal: "perte",
+  level: "debutant",
+  plan: "free",
+  streak: 0,
+  completedSessions: [],
+  totalSeances: 0,
+  totalMins: 0,
+  totalKcal: 0,
+  activeCat: "perte",
+  timerRunning: false,
+  timerSeconds: 0,
+  timerInterval: null,
+  chatHistory: [],
+};
+
+function saveState(){ try{ localStorage.setItem('ol_state', JSON.stringify(state)); }catch(e){} }
+function loadState(){
+  try{
+    const s = localStorage.getItem('ol_state');
+    if(s){ state = {...state, ...JSON.parse(s)}; }
+  }catch(e){}
+}
+
+// ============================================================
+// ONBOARDING
+// ============================================================
+let currentStep = 1;
+let selectedGoal = "perte";
+let selectedLevel = "debutant";
+
+function nextStep(n){
+  if(n===2){
+    document.getElementById('step1').classList.remove('active');
+    document.getElementById('step2').classList.add('active');
+  } else if(n===3){
+    const name = document.getElementById('nameInput').value.trim();
+    if(name) state.name = name;
+    document.getElementById('step2').classList.remove('active');
+    document.getElementById('step3').classList.add('active');
+  } else if(n===4){
+    document.getElementById('step3').classList.remove('active');
+    document.getElementById('step4').classList.add('active');
+  }
+}
+
+function selectGoal(el, goal){
+  document.querySelectorAll('#step3 .onboard-opt').forEach(e=>e.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedGoal = goal;
+}
+
+function selectLevel(el, level){
+  document.querySelectorAll('#step4 .onboard-opt').forEach(e=>e.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedLevel = level;
+}
+
+function finishOnboarding(){
+  state.goal = selectedGoal;
+  state.level = selectedLevel;
+  saveState();
+  document.getElementById('onboarding').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  initApp();
+}
+
+// ============================================================
+// APP
+// ============================================================
+function initApp(){
+  updateStreak();
+  renderToday();
+  renderSessions(state.activeCat);
+  renderNutrition(state.goal);
+  updateProfile();
+  updateHomeStats();
+  renderGoalCard();
+  syncProfileForm();
+}
+
+function showTab(tab){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById(tab).classList.add('active');
+  const navEl = document.getElementById('nav-'+tab);
+  if(navEl) navEl.classList.add('active');
+}
+
+// ============================================================
+// HOME
+// ============================================================
+function updateStreak(){
+  const h = new Date().getHours();
+  let gr = h<12 ? "Bonjour" : h<18 ? "Bon après-midi" : "Bonsoir";
+  document.getElementById('homeGreeting').textContent = gr+" 👋";
+  document.getElementById('homeName').textContent = state.name;
+  document.getElementById('streakDays').textContent = state.streak;
+
+  const dotsEl = document.getElementById('streakDots');
+  dotsEl.innerHTML = '';
+  for(let i=0; i<7; i++){
+    const d = document.createElement('div');
+    d.className = 'streak-dot'+(i<state.streak%7?' done':'');
+    dotsEl.appendChild(d);
+  }
+  const flame = document.getElementById('streakFlame');
+  flame.textContent = state.streak>=7 ? "🔥" : state.streak>=3 ? "🔥" : "💫";
+}
+
+function renderToday(){
+  const el = document.getElementById('todaySessions');
+  const dayOfWeek = new Date().getDay();
+  const sessions = state.goal==='muscle' ? SESSIONS_MUSCLE : SESSIONS_PERTE;
+  const todaySess = sessions.filter((_,i) => i%7 === dayOfWeek%7).slice(0,2);
+
+  el.innerHTML = '';
+  todaySess.forEach(s=>{
+    const done = state.completedSessions.includes(s.day);
+    el.innerHTML += `
+    <div class="today-card ${done?'done':''}" onclick="openSession(${s.day},'${state.goal}')">
+      <div class="today-emoji">${s.emoji}</div>
+      <div class="today-info">
+        <div class="today-title">${s.title}</div>
+        <div class="today-meta">⏱ ${s.duration} · 🔥 ${s.kcal} kcal · ${s.level}</div>
+      </div>
+      <div class="today-check">${done?'✅':'›'}</div>
+    </div>`;
+  });
+}
+
+function updateHomeStats(){
+  document.getElementById('statSeances').textContent = state.totalSeances;
+  document.getElementById('statKcal').textContent = state.totalKcal;
+  document.getElementById('statMins').textContent = state.totalMins;
+  document.getElementById('pStatSeances').textContent = state.totalSeances;
+  document.getElementById('pStatStreak').textContent = state.streak;
+  document.getElementById('pStatDays').textContent = state.totalSeances;
+}
+
+function renderGoalCard(){
+  const gc = document.getElementById('goalCard');
+  if(state.goal === 'perte'){
+    gc.innerHTML = `<b>🔥 Objectif : Perte de poids</b><br>
+    Aujourd'hui : 2 séances cardio + nutrition déficit calorique.<br>
+    💡 Reste dans ta fenêtre de <b>1750 kcal</b> et vise <b>150g de protéines</b> pour préserver le muscle.`;
+  } else {
+    gc.innerHTML = `<b>💪 Objectif : Renforcement musculaire</b><br>
+    Aujourd'hui : Séance de force + nutrition de prise de masse.<br>
+    💡 Atteins tes <b>2450 kcal</b> et tes <b>180g de protéines</b> pour favoriser la récupération.`;
+  }
+}
+
+// ============================================================
+// SESSIONS
+// ============================================================
+function switchCat(cat, el){
+  state.activeCat = cat;
+  document.querySelectorAll('.cat-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  renderSessions(cat);
+}
+
+function renderSessions(cat){
+  const sessions = cat==='muscle' ? SESSIONS_MUSCLE : SESSIONS_PERTE;
+  const el = document.getElementById('sessionsGrid');
+  el.innerHTML = '';
+  sessions.forEach(s=>{
+    const locked = s.locked && state.plan === 'free';
+    const done = state.completedSessions.includes(s.day+'_'+cat);
+    el.innerHTML += `
+    <div class="session-card" onclick="${locked ? "showLockedMsg()" : `openSession(${s.day},'${cat}')`}">
+      <div class="session-img ${cat==='muscle'?'weight':'cardio'}">
+        <span style="font-size:52px">${s.emoji}</span>
+        <div class="session-day-badge">Jour ${s.day}</div>
+        ${locked?'<div class="session-lock">🔒 Premium</div>':''}
+        ${done?'<div class="session-lock" style="background:rgba(74,166,82,0.8)">✅</div>':''}
+      </div>
+      <div class="session-body">
+        <div class="session-title">${s.title}</div>
+        <div style="font-size:12px; color:var(--text-light); margin-top:3px">⏱ ${s.duration} · 🔥 ${s.kcal} kcal · ${s.level}</div>
+        <div class="session-tags">
+          ${s.tags.map(t=>`<span class="tag ${t==='Cardio'||t==='HIIT'?'sage':''}">${t}</span>`).join('')}
+        </div>
+      </div>
+    </div>`;
+  });
+}
+
+function showLockedMsg(){
+  const modal = document.getElementById('sessionModal');
+  document.getElementById('modalBody').innerHTML = `
+    <div style="text-align:center; padding:20px">
+      <div style="font-size:52px; margin-bottom:16px">🔒</div>
+      <h2 style="font-family:'Playfair Display',serif; font-size:22px; margin-bottom:8px">Contenu Premium</h2>
+      <p style="color:var(--text-light); font-size:14px; margin-bottom:24px">Débloquez toutes les séances avec un abonnement Starter ou supérieur.</p>
+      <button class="btn btn-gold" onclick="closeModal2(); showTab('plans')">🌿 Voir les plans</button>
+    </div>`;
+  modal.classList.add('open');
+}
+
+function openSession(day, cat){
+  const sessions = cat==='muscle' ? SESSIONS_MUSCLE : SESSIONS_PERTE;
+  const s = sessions.find(x=>x.day===day);
+  if(!s) return;
+  const key = day+'_'+cat;
+  const done = state.completedSessions.includes(key);
+
+  const exHTML = s.exercises.map(e=>`
+    <div class="exercise-item">
+      <div class="ex-emoji">${e.e}</div>
+      <div class="ex-info">
+        <div class="ex-name">${e.n}</div>
+        <div class="ex-detail">${e.d}</div>
+      </div>
+    </div>`).join('');
+
+  document.getElementById('modalBody').innerHTML = `
+    <div style="display:flex; align-items:center; gap:12px; margin-bottom:16px">
+      <span style="font-size:36px">${s.emoji}</span>
+      <div>
+        <h2 style="font-family:'Playfair Display',serif; font-size:20px">${s.title}</h2>
+        <div style="font-size:13px; color:var(--text-light)">⏱ ${s.duration} · 🔥 ${s.kcal} kcal · Jour ${day}</div>
+      </div>
+    </div>
+    <div class="timer-display">
+      <div class="timer-time" id="modalTimer">00:00</div>
+      <div class="timer-label">Chronomètre de séance</div>
+      <div class="timer-controls">
+        <button class="btn btn-secondary btn-sm" onclick="startTimer()" style="flex:1">▶ Démarrer</button>
+        <button class="btn btn-secondary btn-sm" onclick="stopTimer()" style="flex:1">⏸ Pause</button>
+        <button class="btn btn-secondary btn-sm" onclick="resetTimer()" style="flex:1">🔄 Reset</button>
+      </div>
+    </div>
+    <h3 style="font-family:'Playfair Display',serif; font-size:16px; margin:16px 0 4px">Exercices du jour</h3>
+    <div class="exercise-list">${exHTML}</div>
+    <div style="margin-top:20px">
+      ${done
+        ? `<button class="btn btn-secondary">✅ Séance déjà complétée</button>`
+        : `<button class="btn btn-primary" onclick="completeSession(${day},'${cat}',${s.kcal},${parseInt(s.duration)||30})">✅ Marquer comme terminée</button>`
+      }
+    </div>`;
+
+  document.getElementById('sessionModal').classList.add('open');
+}
+
+// Timer
+let timerInterval = null;
+let timerSec = 0;
+function startTimer(){
+  if(timerInterval) return;
+  timerInterval = setInterval(()=>{
+    timerSec++;
+    const m=Math.floor(timerSec/60).toString().padStart(2,'0');
+    const s=(timerSec%60).toString().padStart(2,'0');
+    const el=document.getElementById('modalTimer');
+    if(el) el.textContent=`${m}:${s}`;
+  },1000);
+}
+function stopTimer(){ clearInterval(timerInterval); timerInterval=null; }
+function resetTimer(){ stopTimer(); timerSec=0; const el=document.getElementById('modalTimer'); if(el) el.textContent="00:00"; }
+
+function completeSession(day, cat, kcal, mins){
+  const key = day+'_'+cat;
+  if(!state.completedSessions.includes(key)){
+    state.completedSessions.push(key);
+    state.totalSeances++;
+    state.totalKcal += kcal;
+    state.totalMins += mins;
+    state.streak++;
+    saveState();
+    updateHomeStats();
+    updateStreak();
+    renderToday();
+    renderSessions(cat);
+  }
+  stopTimer();
+  closeModal2();
+  // Toast
+  showToast("🎉 Séance terminée ! +"+kcal+" kcal brûlées");
+}
+
+function showToast(msg){
+  const t = document.createElement('div');
+  t.style.cssText = `position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:var(--sage-dark);color:white;padding:12px 24px;border-radius:30px;font-size:14px;font-weight:600;z-index:999;animation:fadeIn 0.3s;box-shadow:0 4px 20px rgba(0,0,0,0.2)`;
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(()=>t.remove(), 3000);
+}
+
+function closeModal(e){ if(e.target===e.currentTarget) closeModal2(); }
+function closeModal2(){ document.getElementById('sessionModal').classList.remove('open'); stopTimer(); }
+
+// ============================================================
+// NUTRITION
+// ============================================================
+function renderNutrition(goal){
+  const data = goal==='muscle' ? NUTRITION_MUSCLE : NUTRITION_PERTE;
+  document.getElementById('nutritionSub').textContent = goal==='muscle' ? 'Optimisé pour la prise de masse 💪' : 'Adapté à la perte de poids 🔥';
+
+  // Macros bars
+  const maxVal = Math.max(data.macros.prot, data.macros.carb, data.macros.fat);
+  document.getElementById('barProt').style.width = (data.macros.prot/maxVal*100)+'%';
+  document.getElementById('barCarb').style.width = (data.macros.carb/maxVal*100)+'%';
+  document.getElementById('barFat').style.width = (data.macros.fat/maxVal*100)+'%';
+  document.getElementById('valProt').textContent = data.macros.prot+'g';
+  document.getElementById('valCarb').textContent = data.macros.carb+'g';
+  document.getElementById('valFat').textContent = data.macros.fat+'g';
+  document.getElementById('totalKcal').textContent = data.macros.kcal+' kcal';
+
+  const cont = document.getElementById('nutritionContent');
+  cont.innerHTML = '';
+
+  const renderMeals = (meals, title, emoji) => {
+    let html = `<div class="meal-section"><div class="meal-header"><span class="meal-emoji">${emoji}</span><span class="meal-title">${title}</span></div>`;
+    meals.forEach(m=>{
+      html += `<div class="meal-card">
+        <div class="meal-icon">${m.icon}</div>
+        <div class="meal-info">
+          <div class="meal-name">${m.name}</div>
+          <div class="meal-desc">${m.desc}</div>
+          <div class="meal-macros">
+            <span class="macro-pill p">🥩 ${m.macros.p}g prot</span>
+            <span class="macro-pill c">🌾 ${m.macros.c}g gluc</span>
+            <span class="macro-pill f">🥑 ${m.macros.f}g lip</span>
+            <span class="macro-pill kcal">🔥 ${m.macros.k} kcal</span>
+          </div>
+        </div>
+      </div>`;
+    });
+    html += '</div>';
+    return html;
+  };
+
+  cont.innerHTML += renderMeals(data.petitdej, "Petit-déjeuner", "🌅");
+  cont.innerHTML += renderMeals(data.dejeuner, "Déjeuner", "☀️");
+  cont.innerHTML += renderMeals(data.diner, "Dîner", "🌙");
+}
+
+// ============================================================
+// PLANS
+// ============================================================
+function selectPlan(plan){
+  state.plan = plan;
+  saveState();
+  const names = {starter:'Starter 🌱', performance:'Performance 💪', elite:'Elite 🏆'};
+  showToast("✅ Plan "+names[plan]+" sélectionné !");
+  updateProfile();
+}
+
+// ============================================================
+// COACH IA
+// ============================================================
+async function sendMessage(){
+  const input = document.getElementById('chatInput');
+  const msg = input.value.trim();
+  if(!msg) return;
+  input.value = '';
+  addChat(msg, 'user');
+  addTyping();
+
+  try {
+    const systemPrompt = `Tu es un coach fitness expert et bienveillant pour l'application Only Leveling. 
+    Tu réponds en français. Tu es spécialisé dans :
+    - L'entraînement sportif (musculation, perte de poids, HIIT, cardio, yoga)
+    - La nutrition sportive (macros, calories, timing des repas, supplémentation)
+    - La récupération (sommeil, étirements, foam roller)
+    - La motivation et la psychologie du sportif
+    - La planification de programmes d'entraînement
+    
+    L'utilisateur s'appelle ${state.name}. Son objectif est : ${state.goal==='muscle'?'renforcement musculaire':'perte de poids'}. Niveau : ${state.level}.
+    
+    Réponds de manière concise (3-5 phrases max), chaleureuse et motivante. Utilise des emojis avec modération.
+    Donne des conseils pratiques et précis basés sur la science du sport.`;
+
+    const messages = [
+      ...state.chatHistory.slice(-6),
+      { role: "user", content: msg }
+    ];
+
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 1000,
+        system: systemPrompt,
+        messages: messages
+      })
+    });
+
+    const data = await response.json();
+    removeTyping();
+
+    const reply = data.content?.[0]?.text || "Désolé, je n'ai pas pu répondre. Réessaie !";
+    addChat(reply, 'ai');
+
+    state.chatHistory.push({role:"user", content:msg});
+    state.chatHistory.push({role:"assistant", content:reply});
+    if(state.chatHistory.length > 20) state.chatHistory = state.chatHistory.slice(-20);
+    saveState();
+
+  } catch(e) {
+    removeTyping();
+    addChat("Une erreur est survenue. Vérifie ta connexion et réessaie 🙏", 'ai');
+  }
+}
+
+function quickQuestion(q){
+  document.getElementById('chatInput').value = q;
+  sendMessage();
+}
+
+function addChat(msg, type){
+  const area = document.getElementById('chatArea');
+  const div = document.createElement('div');
+  div.className = 'chat-bubble '+type;
+  div.textContent = msg;
+  area.appendChild(div);
+  area.scrollTop = area.scrollHeight;
+}
+
+function addTyping(){
+  const area = document.getElementById('chatArea');
+  const div = document.createElement('div');
+  div.className = 'chat-bubble typing'; div.id = 'typingIndicator';
+  div.innerHTML = '<div class="typing-dots"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>';
+  area.appendChild(div);
+  area.scrollTop = area.scrollHeight;
+}
+
+function removeTyping(){
+  const el = document.getElementById('typingIndicator');
+  if(el) el.remove();
+}
+
+// Enter key
+document.addEventListener('DOMContentLoaded', ()=>{
+  document.getElementById('chatInput')?.addEventListener('keydown', e=>{ if(e.key==='Enter') sendMessage(); });
+});
+
+// ============================================================
+// PROFILE
+// ============================================================
+function updateProfile(){
+  document.getElementById('profileName').textContent = state.name;
+  document.getElementById('homeName').textContent = state.name;
+  const planNames = {free:'Plan Gratuit',starter:'Plan Starter 🌱',performance:'Plan Performance 💪',elite:'Plan Elite 🏆'};
+  document.getElementById('profilePlanLabel').textContent = planNames[state.plan]||'Plan Gratuit';
+  const goalNames = {perte:'🔥 Perte de poids', muscle:'💪 Renforcement musculaire'};
+  document.getElementById('profileGoalBadge').textContent = goalNames[state.goal]||'🎯 Objectif non défini';
+}
+
+function syncProfileForm(){
+  document.getElementById('editName').value = state.name;
+  setGoalUI(state.goal);
+  setLevelUI(state.level);
+}
+
+function setGoal(g){
+  state.goal = g;
+  setGoalUI(g);
+  renderNutrition(g);
+  renderGoalCard();
+}
+
+function setGoalUI(g){
+  document.getElementById('optPerte').classList.toggle('selected', g==='perte');
+  document.getElementById('optMuscle').classList.toggle('selected', g==='muscle');
+}
+
+function setLevel(l){
+  state.level = l;
+  setLevelUI(l);
+}
+
+function setLevelUI(l){
+  ['debutant','intermediaire','avance'].forEach(x=>{
+    const map={debutant:'lvlDeb',intermediaire:'lvlInt',avance:'lvlAdv'};
+    document.getElementById(map[x]).classList.toggle('selected', x===l);
+  });
+}
+
+function saveProfile(){
+  const name = document.getElementById('editName').value.trim();
+  if(name) state.name = name;
+  saveState();
+  updateProfile();
+  updateStreak();
+  renderToday();
+  renderSessions(state.activeCat);
+  showToast("✅ Profil sauvegardé !");
+}
+
+function resetProgress(){
+  if(confirm("Réinitialiser toute ta progression ?")) {
+    state.streak = 0; state.completedSessions = [];
+    state.totalSeances = 0; state.totalKcal = 0; state.totalMins = 0;
+    saveState(); updateHomeStats(); updateStreak(); renderToday();
+    showToast("🔄 Progression réinitialisée");
+  }
+}
+
+// ============================================================
+// INIT
+// ============================================================
+loadState();
+if(state.name !== "Alex" || state.totalSeances > 0){
+  document.getElementById('onboarding').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  initApp();
+}
+</script>
+
+</body>
+</html>

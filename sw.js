@@ -1,10 +1,9 @@
 const CACHE_NAME = ‘only-leveling-v4’;
 
-//
 const ASSETS = [
-‘/only-leveling/’,
-‘/only-leveling/index.html’,
-‘/only-leveling/manifest.json’,
+‘https://only-leveling.vercel.app/’,
+‘https://only-leveling.vercel.app/index.html’,
+‘https://only-leveling.vercel.app/manifest.json’,
 ];
 
 self.addEventListener(‘install’, e => {

@@ -1,1 +1,30 @@
-const CACHE='ol-v4';const A=['/','index.html','manifest.json'];self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(A)));self.skipWaiting();});self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!==CACHE).map(x=>caches.delete(x)))));self.clients.claim();});self.addEventListener('fetch',e=>{e.respondWith(caches.match(e.request).then(c=>c||fetch(e.request)));});
+const CACHE_NAME = ‘only-leveling-v4’;
+
+//
+const ASSETS = [
+‘/only-leveling/’,
+‘/only-leveling/index.html’,
+‘/only-leveling/manifest.json’,
+];
+
+self.addEventListener(‘install’, e => {
+e.waitUntil(
+caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS))
+);
+self.skipWaiting();
+});
+
+self.addEventListener(‘activate’, e => {
+e.waitUntil(
+caches.keys().then(keys =>
+Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))
+)
+);
+self.clients.claim();
+});
+
+self.addEventListener(‘fetch’, e => {
+e.respondWith(
+caches.match(e.request).then(cached => cached || fetch(e.request))
+);
+});
